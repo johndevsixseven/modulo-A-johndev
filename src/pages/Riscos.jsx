@@ -92,7 +92,7 @@ export default function Riscos() {
   const byId = Object.fromEntries((ai?.data?.itens ?? []).map((i) => [i.id, i.explicacao]))
 
   const columns = [
-    { key: 'score', label: 'Pontuação' },
+    { key: 'score', label: 'Pontuação', num: true },
     { key: 'level', label: 'Nível', value: (r) => RISK_LEVELS[r.level],
       render: (r) => <span className={`badge ${LEVEL_CLASS[r.level]}`}>{RISK_LEVELS[r.level]}</span> },
     { key: 'code', label: 'Pedido' },
@@ -127,6 +127,7 @@ export default function Riscos() {
           </button>
         </div>
       </div>
+      <p className="page-desc">Entregas com maior chance de atraso, os motivos e o que fazer.</p>
       <p className="hint">{critical} entrega(s) crítica(s). Pontuação 0–100 por regras locais; crítico ≥ limite em Configurações (padrão 60).</p>
       {msg.text && <p className={msg.error ? 'error' : 'success'} role={msg.error ? 'alert' : 'status'}>{msg.text}</p>}
       {ai?.text && <p className="notice" role="status">{ai.text}</p>}

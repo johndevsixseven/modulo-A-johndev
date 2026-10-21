@@ -134,6 +134,7 @@ export default function Roteirizacao() {
           <input id="data-rota" type="date" value={date} min={todayBR()} onChange={(e) => e.target.value && setDate(e.target.value)} />
         </div>
       </div>
+      <p className="page-desc">Escolha as entregas e os veículos do dia e gere rotas que respeitam capacidade e janelas.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       {deliveries === null ? <p role="status">Carregando…</p> : (

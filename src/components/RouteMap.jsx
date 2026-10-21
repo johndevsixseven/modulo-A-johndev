@@ -32,7 +32,7 @@ export default function RouteMap({ routes, depot, byStatus = false, vehicles = [
         <TileLayer url={env.mapTileUrl} attribution="&copy; colaboradores do OpenStreetMap"
           eventHandlers={{ tileerror: () => setErrors((n) => n + 1) }} />
         {depot && (
-          <CircleMarker center={[depot.lat, depot.lng]} radius={9} pathOptions={{ color: '#1a1f2b', fillOpacity: 1 }}>
+          <CircleMarker center={[depot.lat, depot.lng]} radius={9} pathOptions={{ color: '#1f2a37', fillOpacity: 1 }}>
             <Tooltip>Depósito</Tooltip>
           </CircleMarker>
         )}
@@ -49,7 +49,7 @@ export default function RouteMap({ routes, depot, byStatus = false, vehicles = [
         )))}
         {vehicles.map((v) => (
           <CircleMarker key={v.id} center={[v.lat, v.lng]} radius={11}
-            pathOptions={{ color: '#fff', fillColor: '#1a1f2b', fillOpacity: 1, weight: 3 }}>
+            pathOptions={{ color: '#fff', fillColor: '#1f2a37', fillOpacity: 1, weight: 3 }}>
             <Tooltip permanent direction="top">{v.plate} · {formatTime(v.seen)}</Tooltip>
           </CircleMarker>
         ))}

@@ -54,6 +54,7 @@ export default function Usuarios() {
   return (
     <div className="stack">
       <h1>Usuários</h1>
+      <p className="page-desc">Crie acessos e defina o perfil de cada pessoa da equipe.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       <form className="card stack" onSubmit={handleCreate}>
@@ -79,7 +80,7 @@ export default function Usuarios() {
             </select>
           </div>
         </div>
-        <div><button type="submit" disabled={busy}>Criar usuário</button></div>
+        <div className="row-actions"><button type="submit" disabled={busy}>Criar usuário</button></div>
       </form>
 
       <section className="card stack" aria-labelledby="lista-usuarios">

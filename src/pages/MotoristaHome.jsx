@@ -73,7 +73,8 @@ export default function MotoristaHome() {
 
   return (
     <div className="stack">
-      <h1>Minha rota · {formatDate(today)}</h1>
+      <h1>Minha rota em {formatDate(today)}</h1>
+      <p className="page-desc">Siga as paradas na ordem e registre o comprovante de cada entrega.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
       {routes === null ? <p role="status">Carregando…</p> : !route ? (
         <div className="card empty">

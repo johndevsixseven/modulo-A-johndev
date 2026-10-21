@@ -47,11 +47,12 @@ export default function Rastreamento() {
   return (
     <div className="stack">
       <div className="page-head">
-        <h1>Rastreamento · {formatDate(today)}</h1>
+        <h1>Rastreamento em {formatDate(today)}</h1>
         <span className={`badge ${mode === 'realtime' ? 'ok' : 'warn'}`} role="status">
           {mode === 'realtime' ? 'Tempo real' : mode === 'polling' ? `Atualização a cada ${Math.round(env.pollingMs / 1000)} s` : 'Conectando…'}
         </span>
       </div>
+      <p className="page-desc">Posição dos veículos e andamento das paradas das rotas liberadas hoje.</p>
       {error && <p className="error" role="alert">{error}</p>}
 
       <div className="card filters" role="search" aria-label="Filtros do rastreamento">
@@ -82,7 +83,7 @@ export default function Rastreamento() {
         {LEGEND.map((s) => (
           <li key={s}><span className="swatch" style={{ background: STATUS_COLORS[s] }} aria-hidden="true" /> {DELIVERY_STATUS[s]}</li>
         ))}
-        <li><span className="swatch" style={{ background: '#1a1f2b' }} aria-hidden="true" /> Veículo (placa e hora)</li>
+        <li><span className="swatch" style={{ background: '#1f2a37' }} aria-hidden="true" /> Veículo (placa e hora)</li>
       </ul>
 
       {rows === null ? <p role="status">Carregando…</p> : !views.length ? (
@@ -92,10 +93,10 @@ export default function Rastreamento() {
           <Suspense fallback={<p role="status">Carregando mapa…</p>}>
             <RouteMap routes={views} vehicles={shownVehicles} byStatus />
           </Suspense>
-          <section className="card" aria-labelledby="veic-h">
+          <section className="card stack" aria-labelledby="veic-h">
             <h2 id="veic-h">Veículos</h2>
             {!shownVehicles.length ? <p className="hint">Nenhuma posição recebida ainda.</p> : (
-              <table>
+              <div className="table-wrap"><table>
                 <thead><tr><th scope="col">Placa</th><th scope="col">Rota</th><th scope="col">Motorista</th><th scope="col">Última posição</th><th scope="col">Hora</th></tr></thead>
                 <tbody>
                   {shownVehicles.map((v) => (
@@ -105,7 +106,7 @@ export default function Rastreamento() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             )}
           </section>
           {views.map((r) => <RouteStops key={r.id} route={r} headingLevel={2} />)}

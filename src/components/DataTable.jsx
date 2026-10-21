@@ -46,8 +46,8 @@ export default function DataTable({ columns, rows, getKey = (r) => r.id, searchL
             <thead>
               <tr>
                 {columns.map((c) => (
-                  c.sortable === false ? <th key={c.key} scope="col">{c.label}</th> : (
-                    <th key={c.key} scope="col"
+                  c.sortable === false ? <th key={c.key} scope="col" className={c.num ? 'num' : undefined}>{c.label}</th> : (
+                    <th key={c.key} scope="col" className={c.num ? 'num' : undefined}
                       aria-sort={sort.key === c.key ? (sort.dir === 1 ? 'ascending' : 'descending') : undefined}>
                       <button type="button" className="th-sort"
                         onClick={() => setSort((s) => ({ key: c.key, dir: s.key === c.key ? -s.dir : 1 }))}>
@@ -61,7 +61,7 @@ export default function DataTable({ columns, rows, getKey = (r) => r.id, searchL
             <tbody>
               {shown.map((r) => (
                 <tr key={getKey(r)}>
-                  {columns.map((c) => <td key={c.key}>{c.render ? c.render(r) : (val(c, r) ?? '—')}</td>)}
+                  {columns.map((c) => <td key={c.key} className={c.num ? 'num' : undefined}>{c.render ? c.render(r) : (val(c, r) ?? '—')}</td>)}
                 </tr>
               ))}
             </tbody>

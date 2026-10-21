@@ -1,6 +1,6 @@
 // Converte a saída de planRoutes (prévia) e as linhas de `routes` do banco no mesmo formato de tela.
 // Cores com contraste ≥ 3:1 sobre o mapa claro; a lista sempre repete nome e número (cor nunca é a única pista).
-export const ROUTE_COLORS = ['#0b5cad', '#b42318', '#116b3a', '#8a5300', '#6b3fa0', '#0e6b74']
+export const ROUTE_COLORS = ['#0e7c7b', '#2563eb', '#b45309', '#b42318', '#6b3fa0', '#1f2a37']
 
 // Embeds 1:1 do PostgREST podem vir como objeto ou array.
 const one = (v) => (Array.isArray(v) ? v[0] : v) ?? null

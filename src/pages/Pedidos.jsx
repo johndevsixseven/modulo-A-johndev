@@ -107,8 +107,8 @@ export default function Pedidos() {
     { key: 'recipient_name', label: 'Destinatário' },
     { key: 'region', label: 'Região' },
     { key: 'window_start', label: 'Janela', render: (r) => `${formatDateTime(r.window_start)} – ${formatDateTime(r.window_end)}` },
-    { key: 'weight_kg', label: 'Peso (kg)', value: (r) => Number(r.weight_kg) },
-    { key: 'volume_m3', label: 'Volume (m³)', value: (r) => Number(r.volume_m3) },
+    { key: 'weight_kg', label: 'Peso (kg)', num: true, value: (r) => Number(r.weight_kg) },
+    { key: 'volume_m3', label: 'Volume (m³)', num: true, value: (r) => Number(r.volume_m3) },
     { key: 'priority', label: 'Prioridade', value: (r) => PRIORITIES[r.priority] },
     { key: 'status', label: 'Status', value: (r) => DELIVERY_STATUS[r.status] },
     { key: 'coords', label: 'Coordenada', value: (r) => (r.lat == null ? 'Sem coordenada' : 'OK'),
@@ -131,6 +131,7 @@ export default function Pedidos() {
         <h1>Pedidos</h1>
         {canWrite && editing === null && <button type="button" onClick={() => open(null)}>Cadastrar pedido</button>}
       </div>
+      <p className="page-desc">Pedidos de entrega com destinatário, janela de horário, peso e volume.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       {editing !== null && (

@@ -118,8 +118,8 @@ export default function DemandForecast({ compact = false }) {
               <YAxis allowDecimals={false} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="historico" name="Histórico" stroke="#2563eb" dot={false} />
-              <Line type="monotone" dataKey="previsao" name="Previsão" stroke="#d97706" strokeDasharray="6 4" dot={false} />
+              <Line type="monotone" dataKey="historico" name="Histórico" stroke="var(--primary)" dot={false} />
+              <Line type="monotone" dataKey="previsao" name="Previsão" stroke="var(--signal)" strokeDasharray="6 4" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -134,7 +134,7 @@ export default function DemandForecast({ compact = false }) {
               <XAxis dataKey="region" />
               <YAxis allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="previsao" name="Entregas previstas" fill="#2563eb" />
+              <Bar dataKey="previsao" name="Entregas previstas" fill="var(--primary)" />
             </BarChart>
           </ResponsiveContainer>
         </div>

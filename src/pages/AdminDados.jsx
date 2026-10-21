@@ -132,6 +132,7 @@ export default function AdminDados() {
   return (
     <div className="stack">
       <div className="page-head"><h1>Dados, backup e LGPD</h1></div>
+      <p className="page-desc">Gere backups e atenda pedidos de acesso, correção ou exclusão de dados pessoais.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       <section className="card stack" aria-labelledby="sec-backup">

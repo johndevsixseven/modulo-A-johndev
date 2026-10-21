@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 // Aviso de privacidade e finalidade (RNF08). Público: acessível também antes do login.
 export default function Privacidade() {
   return (
-    <main id="conteudo" className="container stack">
+    <main id="conteudo" className="container stack doc">
       <h1>Aviso de privacidade</h1>
+      <p className="page-desc">Como a SENN AI-X usa e protege dados pessoais.</p>
       <p>A SENN AI-X trata dados pessoais somente para executar e acompanhar entregas de última milha, conforme a LGPD (Lei 13.709/2018).</p>
       <h2>Quais dados e para quê</h2>
       <ul>

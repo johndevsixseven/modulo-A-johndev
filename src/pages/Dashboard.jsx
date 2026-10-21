@@ -91,6 +91,7 @@ export default function Dashboard() {
           <button type="button" className="secondary" disabled={!kpis} onClick={() => doExport('xlsx')}>Exportar Excel</button>
         </div>
       </div>
+      <p className="page-desc">Indicadores de entrega, custo e ocupação da frota no período escolhido.</p>
 
       <form className="card grid" onSubmit={(e) => e.preventDefault()} aria-label="Filtros">
         <div className="field">
@@ -128,7 +129,7 @@ export default function Dashboard() {
         <div className="grid charts">
           <Chart title="Entregas por status">
             <BarChart data={porStatus}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="Status" /><YAxis allowDecimals={false} /><Tooltip />
-              <Bar dataKey="Total" fill="var(--primary)" /></BarChart>
+              <Bar dataKey="Total" fill="var(--primary)" radius={[4, 4, 0, 0]} /></BarChart>
           </Chart>
           <Chart title="Entregas por região">
             <BarChart data={porRegiao}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="Região" /><YAxis allowDecimals={false} /><Tooltip /><Legend />
@@ -137,7 +138,7 @@ export default function Dashboard() {
           <Chart title="Série diária">
             <LineChart data={(kpis.por_dia ?? []).map((x) => ({ ...x, dia: formatDate(x.dia).slice(0, 5) }))}>
               <CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="dia" /><YAxis allowDecimals={false} /><Tooltip /><Legend />
-              <Line dataKey="total" name="Total" stroke="var(--primary)" /><Line dataKey="entregues" name="Entregues" stroke="var(--success)" />
+              <Line dataKey="total" name="Total" stroke="var(--primary)" /><Line dataKey="entregues" name="Entregues" stroke="var(--info)" />
               <Line dataKey="falhas" name="Falhas" stroke="var(--danger)" /></LineChart>
           </Chart>
         </div>
@@ -175,7 +176,7 @@ export default function Dashboard() {
             </Chart>
             <Chart title="Atrasos por horário (fim da janela)">
               <BarChart data={agg.atrasos_hora}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="hora" /><YAxis allowDecimals={false} /><Tooltip />
-                <Bar dataKey="total" name="Atrasos" fill="var(--warning)" /></BarChart>
+                <Bar dataKey="total" name="Atrasos" fill="var(--signal)" /></BarChart>
             </Chart>
           </div>
         </section>

@@ -53,9 +53,20 @@ export default function Login() {
   }
 
   return (
-    <main className="container login">
-      <form className="card stack" onSubmit={handleSubmit} noValidate aria-describedby="login-erro">
-        <h1>SENN AI-X · Entrar</h1>
+    <div className="login-shell">
+      <aside className="login-brand">
+        <p className="login-logo">SENN AI-X</p>
+        <p className="login-tagline">Roteirize, acompanhe e comprove entregas de última milha em um só lugar.</p>
+        <svg className="login-lane" viewBox="0 0 400 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M -20 560 C 140 520, 60 380, 200 330 S 330 170, 420 60" />
+        </svg>
+      </aside>
+      <main className="login-main">
+      <form className="card stack login-form" onSubmit={handleSubmit} noValidate aria-describedby="login-erro">
+        <div>
+          <h1>Entrar</h1>
+          <p className="hint">Use o e-mail, a senha e o perfil cadastrados para você.</p>
+        </div>
 
         {!supabaseConfigured && (
           <p className="notice" role="status">
@@ -87,6 +98,7 @@ export default function Login() {
         <button type="submit" disabled={busy || !supabaseConfigured}>{busy ? 'Entrando…' : 'Entrar'}</button>
       </form>
       <p className="hint"><Link to="/privacidade">Aviso de privacidade (LGPD)</Link></p>
-    </main>
+      </main>
+    </div>
   )
 }

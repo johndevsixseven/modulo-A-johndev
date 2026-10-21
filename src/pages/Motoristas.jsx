@@ -129,6 +129,7 @@ export default function Motoristas() {
         <h1>Motoristas</h1>
         {canWrite && editing === null && <button type="button" onClick={() => open(null)}>Cadastrar motorista</button>}
       </div>
+      <p className="page-desc">Motoristas, CNH, veículo vinculado e consentimento de uso dos dados.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       {editing !== null && (

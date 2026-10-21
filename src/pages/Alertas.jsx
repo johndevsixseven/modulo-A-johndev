@@ -85,7 +85,7 @@ export default function Alertas() {
         <h1>Alertas</h1>
         <button type="button" onClick={check} disabled={busy}>{busy ? 'Verificando…' : 'Verificar alertas agora'}</button>
       </div>
-      <p className="hint">A verificação também roda sozinha a cada 60 s enquanto alguém da equipe estiver logado.</p>
+      <p className="page-desc">Atrasos, falhas e vencimentos que pedem ação. A verificação também roda sozinha a cada 60 s enquanto alguém da equipe estiver logado.</p>
       <div className="row-actions" role="group" aria-label="Visão">
         {Object.entries(TABS).map(([k, l]) => (
           <button key={k} type="button" className={tab === k ? '' : 'secondary'} aria-pressed={tab === k}

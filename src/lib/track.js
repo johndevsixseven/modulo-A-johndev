@@ -22,6 +22,6 @@ export function trackPoints(geometry, steps) {
 
 // Cores por status das paradas no painel (a legenda repete em texto).
 export const STATUS_COLORS = {
-  pendente: '#6b7280', planejada: '#6b7280', a_caminho: '#0b5cad',
-  entregue: '#116b3a', falha: '#b42318', cancelada: '#6b7280',
+  pendente: '#6b7280', planejada: '#6b7280', a_caminho: '#2563eb',
+  entregue: '#2f855a', falha: '#b42318', cancelada: '#6b7280',
 }

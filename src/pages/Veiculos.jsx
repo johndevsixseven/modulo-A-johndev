@@ -100,10 +100,10 @@ export default function Veiculos() {
   const columns = [
     { key: 'plate', label: 'Placa' },
     { key: 'type', label: 'Tipo', value: (r) => VEHICLE_TYPES[r.type] },
-    { key: 'capacity_kg', label: 'Capacidade (kg)', value: (r) => Number(r.capacity_kg) },
-    { key: 'capacity_m3', label: 'Capacidade (m³)', value: (r) => Number(r.capacity_m3) },
-    { key: 'range_km', label: 'Autonomia (km)', value: (r) => Number(r.range_km) },
-    { key: 'cost_per_km', label: 'Custo/km (R$)', value: (r) => Number(r.cost_per_km) },
+    { key: 'capacity_kg', label: 'Capacidade (kg)', num: true, value: (r) => Number(r.capacity_kg) },
+    { key: 'capacity_m3', label: 'Capacidade (m³)', num: true, value: (r) => Number(r.capacity_m3) },
+    { key: 'range_km', label: 'Autonomia (km)', num: true, value: (r) => Number(r.range_km) },
+    { key: 'cost_per_km', label: 'Custo/km (R$)', num: true, value: (r) => Number(r.cost_per_km) },
     { key: 'status', label: 'Status', value: (r) => VEHICLE_STATUS[r.status] },
     { key: 'next_maintenance', label: 'Próx. manutenção', render: (r) => <Maintenance date={r.next_maintenance} /> },
     ...(canWrite ? [{ key: 'acoes', label: 'Ações', sortable: false, value: () => '', render: (r) => (
@@ -121,6 +121,7 @@ export default function Veiculos() {
         <h1>Veículos</h1>
         {canWrite && editing === null && <button type="button" onClick={() => open(null)}>Cadastrar veículo</button>}
       </div>
+      <p className="page-desc">Frota disponível, capacidade de carga, custo por km e próximas manutenções.</p>
       <p className={msg.error ? 'error' : 'success'} role="status" aria-live="polite">{msg.text}</p>
 
       {editing !== null && (
