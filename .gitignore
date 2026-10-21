@@ -1,0 +1,41 @@
+# Dependências e build
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Segredos (os .env.example SÃO versionados)
+.env
+supabase/functions/.env
+!.env.example
+!supabase/functions/.env.example
+
+# Supabase CLI (artefatos locais)
+supabase/.branches/
+supabase/.temp/
+
+# Backups contêm dados pessoais (LGPD) — nunca versionar
+backups/
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+npm-debug.log*
+
+# Do template Vite
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+*.pdf
+*.md
