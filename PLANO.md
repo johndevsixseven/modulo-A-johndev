@@ -516,10 +516,19 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
 - **Pronto: cada um dos 4 usuários cai no seu painel; perfil errado no select é recusado; URL de tela proibida redireciona para `/`.**
 
 ### Fase 4 — Cadastros (RF02, RF03, RF04)
-- [ ] `Veiculos`, `Motoristas`, `Pedidos` com `DataTable` (busca, ordenação) + formulário com labels visíveis e validação (placa, datas, números > 0, janela fim > início).
-- [ ] Motorista: select de veículo disponível (unique no banco garante 1:1), checkbox consentimento LGPD + finalidade.
-- [ ] Pedido: campo endereço → botão "Localizar" (Nominatim); se falhar, lat/lng manuais.
-- [ ] Importação CSV (seção 7): pré-visualização com erros por linha, importa só as válidas, geocodifica as sem lat/lng em fila de 1 req/s.
+- [x] `Veiculos`, `Motoristas`, `Pedidos` com `DataTable` (busca, ordenação) + formulário com labels visíveis e validação (placa, datas, números > 0, janela fim > início).
+  - Arquivos: `src/pages/{Veiculos,Motoristas,Pedidos}.jsx`, `src/components/{DataTable,Field,ConfirmDialog,ImportarPedidos}.jsx`, `src/lib/{csv,geocode,labels,useForm,dbError}.js`. Rotas `/veiculos`, `/motoristas`, `/pedidos` para admin, gestor e despachante; a escrita é decidida na página pela matriz da seção 3 (veículos/motoristas: admin+gestor; pedidos: admin+despachante) e garantida pelo RLS. Links nos painéis `/frota` e `/despacho`.
+  - Validação no blur (erro some ao corrigir, `aria-invalid` + `aria-live`), exclusão com `<dialog>` nomeado, estados vazios com ação. Placa normalizada (maiúsculas, sem hífen) e validada com o mesmo regex do banco. CNH vencida é recusada no formulário. Destaque visual na listagem: manutenção ≤ 7 dias e CNH ≤ 30 dias (valores fixos; alertas reais e `settings.alertas` na Fase 8).
+  - *Desvio:* pedidos só são editados/excluídos com status `pendente` (depois disso o ciclo segue pela roteirização/POD). Lista de pedidos filtrada por status (padrão `pendente`), limite de 500 linhas — paginação com `range()` na Fase 10.
+  - Sem migration nova: schema e RLS da Fase 2 já cobriam tudo. Nenhum vínculo motorista ↔ usuário (`profile_id`) na tela; continua pelo `seed-users.mjs`.
+- [x] Motorista: select de veículo disponível (unique no banco garante 1:1), checkbox consentimento LGPD + finalidade.
+  - O select lista veículos sem motorista (mais o atual); violação de unicidade vira mensagem amigável. `consent_at` mantém a data original ao editar.
+- [x] Pedido: campo endereço → botão "Localizar" (Nominatim); se falhar, lat/lng manuais.
+  - `src/lib/geocode.js`: fila global de 1 req/s, timeout 10 s, `countrycodes=br`; no navegador não dá para definir User-Agent (o Referer identifica). Com `VITE_ENABLE_MAPS=false` o botão fica desligado e só vale lat/lng digitados. Pedido sem coordenada pode ser salvo e aparece com selo "Sem coordenada".
+- [x] Importação CSV (seção 7): pré-visualização com erros por linha, importa só as válidas, geocodifica as sem lat/lng em fila de 1 req/s.
+  - Prévia mostra linha, código, situação e motivo (inclui código repetido no arquivo e já cadastrado); colunas obrigatórias ausentes bloqueiam a prévia. Grava as válidas num único `insert` e **depois** geocodifica as sem lat/lng (1 req/s, para no primeiro erro do serviço; as que sobrarem ficam "Sem coordenada").
+  - `public/exemplo-pedidos.csv` (8 pedidos, 2 sem lat/lng, decimais com `.` e `,`) com link "Baixar arquivo de exemplo" na tela. Teste: `npm test` (`src/lib/csv.test.js`; o `node --test src/lib` com pasta não funciona no Windows/Node 24, por isso o script usa glob).
+  - Validação: build, lint e `npm test` ok; teste de API no remoto (gestor CRUD de veículo/motorista, placa inválida 23514, veículo duplicado 23505, despachante cria pedido e lote do CSV, despachante não cria veículo e motorista não cria pedido → 42501); teste no navegador como gestor e despachante (validação, exclusão nomeada, prévia do CSV válido/inválido, importação 8/8 com geocodificação, fallback com Nominatim fora do ar). Dados de teste removidos.
 - **Pronto: CRUD completo dos três; `public/exemplo-pedidos.csv` importa 100% e um CSV com erro mostra a linha e o motivo.**
 
 ### Fase 5 — Roteirização (RF05)

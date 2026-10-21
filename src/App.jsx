@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import AuthProvider from './auth/AuthProvider.jsx'
 import RequireRole from './auth/RequireRole.jsx'
 import { useAuth } from './auth/context.js'
@@ -7,6 +7,9 @@ import Layout from './components/Layout.jsx'
 import Login from './pages/Login.jsx'
 import Painel from './pages/Painel.jsx'
 import Usuarios from './pages/Usuarios.jsx'
+import Veiculos from './pages/Veiculos.jsx'
+import Motoristas from './pages/Motoristas.jsx'
+import Pedidos from './pages/Pedidos.jsx'
 
 // "/" leva cada perfil ao seu painel; rotas proibidas também caem aqui (RequireRole).
 function Home() {
@@ -25,12 +28,16 @@ export default function App() {
             <Route element={<Layout />}>
               <Route element={<RequireRole roles={['admin', 'gestor_frota', 'despachante']} />}>
                 <Route path="/dashboard" element={<Painel title="Dashboard">KPIs e gráficos chegam na Fase 9.</Painel>} />
+                {/* Escrita decidida na página e garantida no RLS: veículos/motoristas admin+gestor; pedidos admin+despachante. */}
+                <Route path="/veiculos" element={<Veiculos />} />
+                <Route path="/motoristas" element={<Motoristas />} />
+                <Route path="/pedidos" element={<Pedidos />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'gestor_frota']} />}>
-                <Route path="/frota" element={<Painel title="Painel da frota">Veículos e motoristas chegam na Fase 4.</Painel>} />
+                <Route path="/frota" element={<Painel title="Painel da frota">Cadastros: <Link to="/veiculos">Veículos</Link> · <Link to="/motoristas">Motoristas</Link>. Indicadores da frota chegam nas próximas fases.</Painel>} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'despachante']} />}>
-                <Route path="/despacho" element={<Painel title="Painel de despacho">Pedidos e roteirização chegam nas Fases 4 e 5.</Painel>} />
+                <Route path="/despacho" element={<Painel title="Painel de despacho">Cadastros: <Link to="/pedidos">Pedidos</Link> (com importação CSV). A roteirização chega na Fase 5.</Painel>} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'motorista']} />}>
                 <Route path="/motorista" element={<Painel title="Minha rota">A rota do dia chega na Fase 5.</Painel>} />

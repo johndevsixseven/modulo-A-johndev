@@ -8,6 +8,9 @@ const NAV = [
   { to: '/dashboard', label: 'Dashboard', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/frota', label: 'Frota', roles: ['admin', 'gestor_frota'] },
   { to: '/despacho', label: 'Despacho', roles: ['admin', 'despachante'] },
+  { to: '/veiculos', label: 'Veículos', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/motoristas', label: 'Motoristas', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/pedidos', label: 'Pedidos', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/motorista', label: 'Minha rota', roles: ['admin', 'motorista'] },
   { to: '/usuarios', label: 'Usuários', roles: ['admin'] },
 ]

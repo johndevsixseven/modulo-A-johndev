@@ -134,3 +134,32 @@ th, td { padding: 8px; text-align: left; border-bottom: 1px solid var(--border);
   .nav ul { flex-direction: column; }
   .user { margin-left: 0; width: 100%; justify-content: space-between; }
 }
+
+/* ---- Fase 4: cadastros ---- */
+.page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space); }
+.page-head h1 { margin: 0; }
+.row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.row-actions p { margin: 0; }
+.hint { color: var(--text-muted); font-weight: 400; }
+.field-error { margin: 0; color: var(--danger); font-weight: 600; }
+.field-error:empty { display: none; }
+[aria-invalid='true'] { border-color: var(--danger); border-width: 2px; }
+.field.search { max-width: 360px; }
+.checkbox { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.checkbox input { min-height: 0; width: 20px; height: 20px; }
+fieldset { border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space); margin: 0; min-width: 0; }
+legend { font-weight: 600; padding: 0 4px; }
+button.danger { background: var(--danger); color: #fff; }
+button.danger-text { color: var(--danger); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor;
+  font-size: 0.875rem; font-weight: 600; white-space: nowrap; }
+.badge.warn { color: var(--warning); }
+.badge.danger { color: var(--danger); }
+.badge.ok { color: var(--success); }
+.empty { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: var(--space) 0; }
+.empty p { margin: 0; }
+.th-sort { min-height: 0; padding: 0; background: none; color: inherit; font-weight: 700; border: 0; text-align: left; }
+caption { text-align: left; }
+dialog { max-width: min(480px, calc(100vw - 32px)); color: var(--text); }
+dialog::backdrop { background: rgb(0 0 0 / 0.5); }
+dialog h2 { margin: 0; }
