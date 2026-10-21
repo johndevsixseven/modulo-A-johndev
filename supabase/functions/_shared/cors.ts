@@ -1,0 +1,10 @@
+// CORS das Edge Functions. ALLOWED_ORIGIN restringe a origem (ex.: https://app.exemplo.com); vazio = qualquer.
+// A autenticação é por token Bearer no header (não cookie), então '*' não abre CSRF.
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+export const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })

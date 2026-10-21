@@ -475,7 +475,7 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
   ```
   (SheetJS pelo CDN oficial: a versão do registro npm está desatualizada e tem vulnerabilidade conhecida. Assinatura com `<canvas>` próprio — sem dependência extra.)
 - [ ] `git init`, primeiro commit; criar repositório no GitHub e convidar **Cardoso30S, fiorezewesley, Greggori**. *(feito: `git init -b main`; pendente: commit, repositório e convites — com o usuário)*
-- [ ] Criar projeto em supabase.com; preencher `.env`; `npx supabase init`; `npx supabase login`; `npx supabase link --project-ref <ref>`. *(feito: `npx supabase init`; pendente: projeto, `.env`, login e link — exigem credenciais)*
+- [x] Criar projeto em supabase.com; preencher `.env`; `npx supabase init`; `npx supabase login`; `npx supabase link --project-ref ttbilaufbrzqaeipnjad`.
 - [x] `src/lib/env.js` (padrões quando a variável está vazia), `src/lib/supabase.js`, `index.css` com tokens de cor (contraste AA), `:focus-visible`, layout responsivo.
 - **Pronto: `npm run dev` abre a página e `supabase.auth.getSession()` responde sem erro.**
 
@@ -495,14 +495,24 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
     9. RPCs: `release_route` exige status `rascunho` com veículo e motorista; `start_route` aceita dono da rota ou admin e zera o "parado" (`last_moved_at = now()`); `check_alerts` recusa quem não é da equipe (pg_cron/service_role sem JWT passam), não alerta manutenção de veículo já `em_manutencao`, severidade alta quando já venceu, e também cria `risco_alto` a partir de `deliveries.risk_score`; datas em America/Sao_Paulo. `dashboard_kpis`/`demand_history` são `security invoker` (RLS de quem chama). LGPD com checagem explícita de admin.
     10. `EXECUTE` das RPCs revogado de `anon`/`public` (o Supabase concede ao anon por padrão) e concedido a `authenticated`/`service_role`.
   - *Seed:* determinístico via `hashtext()` (sem `random()`), chaves fixas e `on conflict do nothing`; o motorista de teste é o driver `…0203` (van SEN2B03). `profiles` só é preenchido pelo `seed-users.mjs`.
-- [ ] `npx supabase db push` (ou colar no SQL Editor na ordem). Rodar `seed.sql` no SQL Editor. *(pendente: exige `supabase login`/`link` do usuário e `.env` preenchido)*
+- [x] `npx supabase db push --include-seed` no projeto remoto (`ttbilaufbrzqaeipnjad`): as 3 migrations e o seed aplicaram na 1ª tentativa, **sem correções de SQL**.
 - [x] `scripts/seed-users.mjs`: cria 4 usuários (admin, gestor, despachante, motorista) com `auth.admin.createUser`, atualiza `profiles.role` e vincula o motorista a `drivers`. Rodar: `node scripts/seed-users.mjs` (o script carrega `.env` e `supabase/functions/.env` sozinho). E-mails `@senn-aix.test` fixos no script; **senhas aleatórias geradas na 1ª execução** e gravadas em `scripts/test-users.local.json` (no `.gitignore`), reaproveitadas nas seguintes.
   - *Correção:* senhas não ficam no código nem no README (repositório é compartilhado); o README deve só apontar o arquivo local.
 - **Pronto: no SQL Editor, `select count(*)` retorna dados em todas as tabelas; com o JWT do motorista, `select * from deliveries` só retorna entregas da rota dele.**
 
 ### Fase 3 — Autenticação e layout (RF01, RNF01, RNF03)
-- [ ] `AuthProvider` (sessão + profile), `RequireRole roles={[...]}`, `Login` com select de perfil, redirecionamento por perfil, `Layout` com menu filtrado por perfil (navegável por teclado, menu colapsa no mobile).
-- [ ] Edge Function `admin-users` (valida JWT → `profiles.role='admin'` → `auth.admin.createUser`/`deleteUser`/update role). Página `Usuarios`.
+- [x] `AuthProvider` (sessão + profile), `RequireRole roles={[...]}`, `Login` com select de perfil, redirecionamento por perfil, `Layout` com menu filtrado por perfil (navegável por teclado, menu colapsa no mobile).
+  - Arquivos: `src/auth/{AuthProvider.jsx, RequireRole.jsx, context.js, roles.js}`, `src/components/Layout.jsx`, `src/pages/{Login,Painel,Usuarios}.jsx`, rotas em `App.jsx`. `useAuth` fica em `context.js` (oxlint `only-export-components`).
+  - Rotas desta fase: `/login`, `/` (redireciona por perfil), `/dashboard`, `/frota`, `/despacho`, `/motorista` (painéis provisórios — conteúdo nas fases 4, 5 e 9) e `/usuarios`. Qualquer outra URL → `/`. O menu só lista telas que já existem; as demais entram junto com suas fases.
+  - Erro de perfil: "O perfil selecionado não corresponde a este usuário…" (após `signOut()`); usuário desativado e falha de rede têm mensagens próprias. Com `.env` vazio a tela de login mostra aviso e desabilita o botão.
+- [x] Edge Function `admin-users` (valida JWT → `profiles.role='admin'` → `auth.admin.createUser`/`deleteUser`/update role). Página `Usuarios`.
+  - *Desvio:* em vez de excluir, **desativa/reativa** (`ban_duration`), preservando histórico (entregas, PODs, alertas). Exclusão definitiva fica para a tela LGPD da Fase 10. Ações: `list`, `create`, `update` (perfil, nome, senha), `deactivate`, `activate`. O admin não pode desativar nem rebaixar a si mesmo. `create` apaga o usuário do Auth se a gravação do perfil falhar.
+  - Cadastro público desligado: `enable_signup = false` em `[auth]` do `supabase/config.toml` (**no projeto remoto, desligar também em Authentication → Sign In / Providers → "Allow new users to sign up"**; o `config.toml` só vale para o ambiente local/`config push`).
+  - CORS em `supabase/functions/_shared/cors.ts`; `ALLOWED_ORIGIN` (novo, em `supabase/functions/.env.example`) restringe a origem.
+  - Limite conhecido: usuário desativado mantém o access token atual até expirar (padrão 1 h); não consegue renovar nem entrar de novo.
+  - Validação: `npm run build`, `npm run lint` e `npx deno check` da função ok; `npm run dev` responde `/` e `/login`.
+  - Deploy: `npx supabase functions deploy admin-users` (feito; `ALLOWED_ORIGIN` vazio = `*`).
+  - Teste ponta a ponta no remoto (supabase-js): anon não lê veículos; os 4 usuários entram e leem o próprio `role`; admin vê 6 veículos; motorista vê só o próprio veículo/rotas e nenhum alerta; despachante lê entregas; `admin-users` `list` ok para admin e 403 para despachante; `dashboard_kpis` responde.
 - **Pronto: cada um dos 4 usuários cai no seu painel; perfil errado no select é recusado; URL de tela proibida redireciona para `/`.**
 
 ### Fase 4 — Cadastros (RF02, RF03, RF04)
