@@ -25,7 +25,7 @@ export function fromDb(row, i) {
   const v = one(row.vehicles) ?? {}
   const ds = [...(row.deliveries ?? [])].sort((a, b) => a.stop_order - b.stop_order)
   return {
-    key: row.id, id: row.id, status: row.status, color: ROUTE_COLORS[i % ROUTE_COLORS.length],
+    key: row.id, id: row.id, status: row.status, vehicle_id: row.vehicle_id, driver_id: row.driver_id, color: ROUTE_COLORS[i % ROUTE_COLORS.length],
     name: row.name, plate: v.plate, driver: one(row.drivers)?.name,
     total_km: Number(row.total_km), total_min: row.total_min, est_cost: Number(row.est_cost),
     load_kg: Number(row.load_kg), load_m3: Math.round(sum(ds, 'volume_m3') * 1000) / 1000,
@@ -35,6 +35,6 @@ export function fromDb(row, i) {
 }
 
 // select() de rotas com veículo, motorista e paradas — usado em /roteirizacao e /motorista.
-export const ROUTE_SELECT = 'id, name, status, route_date, total_km, total_min, est_cost, load_kg, geometry, '
+export const ROUTE_SELECT = 'id, name, status, route_date, vehicle_id, driver_id, total_km, total_min, est_cost, load_kg, geometry, '
   + 'vehicles(plate, capacity_kg, capacity_m3), drivers(name), '
   + 'deliveries(id, code, region, address, lat, lng, window_start, window_end, weight_kg, volume_m3, status, stop_order, eta)'

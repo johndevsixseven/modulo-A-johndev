@@ -474,7 +474,7 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
   npm i -D supabase
   ```
   (SheetJS pelo CDN oficial: a versão do registro npm está desatualizada e tem vulnerabilidade conhecida. Assinatura com `<canvas>` próprio — sem dependência extra.)
-- [ ] `git init`, primeiro commit; criar repositório no GitHub e convidar **Cardoso30S, fiorezewesley, Greggori**. *(feito: `git init -b main`; pendente: commit, repositório e convites — com o usuário)*
+- [ ] `git init`, commits e repositório GitHub feitos; pendente: convidar **Cardoso30S, fiorezewesley, Greggori** (com o usuário).
 - [x] Criar projeto em supabase.com; preencher `.env`; `npx supabase init`; `npx supabase login`; `npx supabase link --project-ref ttbilaufbrzqaeipnjad`.
 - [x] `src/lib/env.js` (padrões quando a variável está vazia), `src/lib/supabase.js`, `index.css` com tokens de cor (contraste AA), `:focus-visible`, layout responsivo.
 - **Pronto: `npm run dev` abre a página e `supabase.auth.getSession()` responde sem erro.**
@@ -537,7 +537,7 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
   - Limites: 2-opt ignora prioridade (só distância, com janelas válidas); heurística gulosa, não ótima; 2-opt é O(n³) por rota (ok para dezenas de paradas por veículo).
   - Testes: capacidade kg/m³, janelas (inclui espera), autonomia, 2-opt não piora, entrada vazia, sem veículo, sem coordenada, frota cheia, urgente priorizado, cada pedido uma única vez.
 - [x] Tela `Roteirizacao` (`/roteirizacao`, admin e despachante; link no `/despacho` e no menu): data, checkboxes de pedidos pendentes sem rota (janela iniciando na data) e de veículos `disponivel` com motorista disponível e CNH válida → "Gerar rotas" → mapa (Leaflet, carregado sob demanda) com polilinha/cor por rota + lista ordenada de paradas com ETA, janela, km, tempo, custo, carga/capacidade e link "Abrir no OpenStreetMap"; tabela de não alocados com motivo. Fallback: `VITE_ENABLE_MAPS=false` ou ≥ 3 `tileerror` → aviso e só a lista (que sempre aparece).
-- [ ] "Explicar com IA" (opcional): fica para a Fase 7 (`routes.ai_notes` já existe; o botão entra na tela `Roteirizacao`).
+- [x] "Explicar com IA" (opcional): descartado — a IA ficou em previsão, risco, análise e chatbot.
 - [x] "Salvar e liberar": insere `routes` (rascunho), atualiza `deliveries.route_id/stop_order/eta` só se ainda `pendente` e sem rota (senão desfaz a rota) e chama `release_route`. Rascunho que não liberou aparece em "Rotas salvas" com botão "Liberar".
 - [x] `MotoristaHome` (`/motorista`): rota do dia (RLS: só as do motorista; admin escolhe entre todas), mapa, lista de paradas, botão "Iniciar rota" (`start_route`).
   - Sem migration nova. Validação: build, lint e `npm test` ok; teste de API no remoto: 30 pedidos do seed → 5 rotas, 27 alocadas, 3 não alocadas por janela vencida, nenhuma capacidade/autonomia excedida; `release_route` ok (repetir → P0002; gestor → 42501); motorista vê só a rota dele e as paradas dela, não vê/inicia a de outro, `start_route` ok. Dados restaurados. Navegador: só a geração no `/roteirizacao` foi conferida (mapa + lista); salvar/liberar pela tela, tela do motorista e 375 px não foram testados no navegador (prioridade de prazo).
@@ -554,18 +554,18 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
 - Complexidade O(n²) por rota; adequado a centenas de pedidos. Não depende de IA nem de internet (cobre RNF06).
 
 ### Fase 6 — Rastreamento e POD (RF06, RF07, RNF04)
-- [ ] `src/lib/live.js` → `useLive(table, filter, fetcher)`: assina `postgres_changes`; se o status do canal for `CHANNEL_ERROR`/`TIMED_OUT`/`CLOSED` → `setInterval(fetcher, VITE_POLLING_MS)`; mostra indicador "Tempo real" / "Atualização a cada 15 s".
-- [ ] `MotoristaHome`: `navigator.geolocation.watchPosition` com envio a cada 10 s para `vehicle_positions`; **modo simulação** (botão) que percorre a `geometry` da rota a cada 3 s — usado na demonstração.
-- [ ] `Rastreamento`: marcadores de veículos (última posição), paradas coloridas por status (a caminho = azul, entregue = verde, falha = vermelho, pendente = cinza), filtros por rota, motorista, região; legenda com texto (não só cor).
-- [ ] `EntregaPod`: resultado (entregue/falha + motivo), método (foto via `<input type="file" accept="image/*" capture="environment">`, código digitado, ou assinatura em `SignaturePad`), geolocalização automática, data/hora do servidor; upload em `pod/{delivery_id}/…`; insert em `pods` (trigger atualiza status).
+- [x] `src/lib/live.js` → `useLive(table, filter, fetcher)`: assina `postgres_changes`; se o status do canal for `CHANNEL_ERROR`/`TIMED_OUT`/`CLOSED` → `setInterval(fetcher, VITE_POLLING_MS)`; mostra indicador "Tempo real" / "Atualização a cada 15 s".
+- [x] `MotoristaHome`: `navigator.geolocation.watchPosition` com envio a cada 10 s para `vehicle_positions`; **modo simulação** (botão) que percorre a `geometry` da rota a cada 3 s — usado na demonstração.
+- [x] `Rastreamento`: marcadores de veículos (última posição), paradas coloridas por status (a caminho = azul, entregue = verde, falha = vermelho, pendente = cinza), filtros por rota, motorista, região; legenda com texto (não só cor).
+- [x] `EntregaPod`: resultado (entregue/falha + motivo), método (foto via `<input type="file" accept="image/*" capture="environment">`, código digitado, ou assinatura em `SignaturePad`), geolocalização automática, data/hora do servidor; upload em `pod/{delivery_id}/…`; insert em `pods` (trigger atualiza status).
 - **Pronto: com o modo simulação ligado em uma aba, o veículo se move no mapa de outra aba em < 3 s; POD muda o ponto para verde sem recarregar.**
 
 ### Fase 7 — Edge Function de IA (base de RF08, RF09, RF12, RF13)
-- [ ] `_shared/llm.ts`: `chat(messages, {json})` → `POST {AI_BASE_URL}chat/completions` com `Authorization: Bearer AI_API_KEY`, `model: AI_MODEL`, `temperature: 0.2`, `response_format: {type:'json_object'}` quando `json`; timeout 20 s; base padrão por `AI_PROVIDER`; `AI_PROVIDER=none` ou sem chave → lança `AI_DISABLED`.
-- [ ] `_shared/auth.ts`: cria client com o JWT do usuário (RLS vale para o contexto que a IA recebe) e lê o perfil; recusa anônimo.
-- [ ] `ai/index.ts`: `{action, payload}` → prompt de sistema por ação (tabela abaixo) → valida o JSON → `{ok:true, source:'ia', data}` ou `{ok:false, error}`.
-- [ ] `src/lib/ai.js`: `askAI(action, payload, fallbackFn)` → se `VITE_ENABLE_AI` falso ou erro/timeout → `{source:'local', data: fallbackFn()}`. A UI mostra selo "Gerado por IA" ou "Cálculo local".
-- [ ] Deploy: `npx supabase functions deploy ai` e `npx supabase secrets set --env-file supabase/functions/.env`.
+- [x] `_shared/llm.ts`: `chat(messages, {json})` → `POST {AI_BASE_URL}chat/completions` com `Authorization: Bearer AI_API_KEY`, `model: AI_MODEL`, `temperature: 0.2`, `response_format: {type:'json_object'}` quando `json`; timeout 20 s; base padrão por `AI_PROVIDER`; `AI_PROVIDER=none` ou sem chave → lança `AI_DISABLED`.
+- [x] `_shared/auth.ts`: cria client com o JWT do usuário (RLS vale para o contexto que a IA recebe) e lê o perfil; recusa anônimo.
+- [x] `ai/index.ts`: `{action, payload}` → prompt de sistema por ação (tabela abaixo) → valida o JSON → `{ok:true, source:'ia', data}` ou `{ok:false, error}`.
+- [x] `src/lib/ai.js`: `askAI(action, payload, fallbackFn)` → se `VITE_ENABLE_AI` falso ou erro/timeout → `{source:'local', data: fallbackFn()}`. A UI mostra selo "Gerado por IA" ou "Cálculo local".
+- [x] Deploy: `npx supabase functions deploy ai` e `npx supabase secrets set --env-file supabase/functions/.env`.
 - **Pronto: com chave válida a resposta vem `source:'ia'`; com `AI_PROVIDER=none` a tela continua funcionando com `source:'local'`.**
 
 | Ação | Entrada enviada | Saída JSON esperada |
@@ -579,9 +579,10 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
 Prompt de sistema base (em português, documentado no README): "Você é o assistente analítico da SENN AI-X, operadora de logística de última milha. Responda somente com base nos dados fornecidos, em português do Brasil, de forma objetiva. Não invente números. Responda apenas no formato JSON especificado: …".
 
 ### Fase 8 — Previsão, risco e alertas (RF08, RF09, RF11)
-- [ ] `forecast.js`: para cada região, média móvel dos últimos 28 dias × fator do dia da semana (média do dia da semana ÷ média geral); 7 valores diários + total de 30 dias. Teste com série sintética.
-- [ ] `Previsao`: seletor 7/30 dias, gráfico de linha (histórico + previsão tracejada) e barras por região; botão "Refinar com IA". Resumo no Dashboard.
-- [ ] `risk.js` — pontuação 0–100 (limite 100):
+- [x] `forecast.js`: para cada região, média móvel dos últimos 28 dias × fator do dia da semana (média do dia da semana ÷ média geral); 7 valores diários + total de 30 dias. Teste com série sintética.
+- [x] `Previsao`: seletor 7/30 dias, gráfico de linha (histórico + previsão tracejada) e barras por região; botão "Refinar com IA". Resumo no Dashboard.
+  - Componente `src/components/DemandForecast.jsx`; `<DemandForecast compact />` é o resumo (tabela 7/30 dias) para encaixar no Dashboard.
+- [x] `risk.js` — pontuação 0–100 (limite 100):
   - ETA > `window_end`: +50; folga < 30 min: +25; folga < 60 min: +10
   - sem rota e `window_start` < agora + 2 h: +20
   - prioridade urgente: +10
@@ -589,31 +590,33 @@ Prompt de sistema base (em português, documentado no README): "Você é o assis
   - taxa de falha histórica da região × 30
   - nível: < 30 baixo, 30–59 médio, ≥ 60 crítico
   - ação por regra: ETA estourado → "replanejar"; urgente sem rota → "priorizar"; região com falha alta → "contatar cliente".
-- [ ] `Riscos`: tabela ordenada por pontuação, badge de nível (texto + cor), motivos, ações (botões "Priorizar" → prioridade urgente; "Replanejar" → leva à roteirização com o pedido marcado). Recalcula ao abrir e a cada atualização em tempo real; grava `risk_*` em `deliveries`; críticos geram alerta `risco_alto`.
-- [ ] Alertas: front chama `rpc('check_alerts')` a cada 60 s (enquanto houver usuário da equipe logado) e depois `functions.invoke('send-alerts')`.
-- [ ] `send-alerts`: pega alertas com `emailed_at is null` e severidade alta/média, envia via Resend para `ALERT_EMAIL_TO`, grava `emailed_at` e `notification_log(channel='email')`. Sem `RESEND_API_KEY` → responde `{skipped:true}` sem erro.
-- [ ] `Alertas`: lista em tempo real (abertos/resolvidos), filtros por tipo, botão "Marcar como resolvido", aba "Log de notificações"; contador no menu.
+- [x] `Riscos`: tabela ordenada por pontuação, badge de nível (texto + cor), motivos, ações (botões "Priorizar" → prioridade urgente; "Replanejar" → leva à roteirização com o pedido marcado). Recalcula ao abrir e a cada atualização em tempo real; grava `risk_*` em `deliveries`; críticos geram alerta `risco_alto`.
+- [x] Alertas: front chama `rpc('check_alerts')` a cada 60 s (enquanto houver usuário da equipe logado) e depois `functions.invoke('send-alerts')`.
+- [x] `send-alerts`: pega alertas com `emailed_at is null` e severidade alta/média, envia via Resend para `ALERT_EMAIL_TO`, grava `emailed_at` e `notification_log(channel='email')`. Sem `RESEND_API_KEY` → responde `{skipped:true}` sem erro.
+- [x] `Alertas`: lista em tempo real (abertos/resolvidos), filtros por tipo, botão "Marcar como resolvido", aba "Log de notificações"; contador no menu.
 - **Pronto: entrega com janela no passado gera alerta em ≤ 60 s; resolver some da lista de abertos; log mostra painel (+ e-mail se configurado).**
 
 ### Fase 9 — Dashboard, Análise Inteligente e Chatbot (RF10, RF12, RF13)
-- [ ] `Dashboard`: filtros de período (hoje, 7, 30 dias, personalizado) e região → `rpc('dashboard_kpis')`; cards OTD, custo/entrega, km, ocupação; gráficos (Recharts) de entregas por status e por região, série diária.
-- [ ] `export.js`: PDF (jsPDF + autotable: título, período, KPIs, tabelas) e Excel (SheetJS: abas KPIs, PorStatus, PorRegiao, Entregas).
-- [ ] `Analise`: `insights.js` gera por regras (região com maior custo/entrega, maior taxa de falha, horário com mais atrasos, veículos com ocupação < 50%); "Gerar análise com IA" envia os mesmos agregados; mostra texto + 2 gráficos (custo por região, atrasos por hora).
-- [ ] `ChatHelper`: botão flutuante acessível (Esc fecha, foco preso no diálogo); envia pergunta; renderiza resposta e botões de ação (`navigate(rota)`); fallback `chatFallback.js`: reconhece código de entrega (`/[A-Z]{2,}-?\d+/`) → consulta status; "atrasad", "OTD", "custo", "alerta" → consultas diretas; "como"/"onde" → descreve a tela e oferece link.
+- [x] `Dashboard`: filtros de período (hoje, 7, 30 dias, personalizado) e região → `rpc('dashboard_kpis')`; cards OTD, custo/entrega, km, ocupação; gráficos (Recharts) de entregas por status e por região, série diária.
+- [x] `export.js`: PDF (jsPDF + autotable: título, período, KPIs, tabelas) e Excel (SheetJS: abas KPIs, PorStatus, PorRegiao, Entregas).
+- [x] `Analise`: `insights.js` gera por regras (região com maior custo/entrega, maior taxa de falha, horário com mais atrasos, veículos com ocupação < 50%); "Gerar análise com IA" envia os mesmos agregados; mostra texto + 2 gráficos (custo por região, atrasos por hora).
+- [x] `ChatHelper`: botão flutuante acessível (Esc fecha, foco preso no diálogo); envia pergunta; renderiza resposta e botões de ação (`navigate(rota)`); fallback `chatFallback.js`: reconhece código de entrega (`/[A-Z]{2,}-?\d+/`) → consulta status; "atrasad", "OTD", "custo", "alerta" → consultas diretas; "como"/"onde" → descreve a tela e oferece link.
 - **Pronto: exportações abrem no leitor de PDF/Excel com os números da tela; chat responde "qual o status da entrega PED-0001?" com e sem IA.**
 
 ### Fase 10 — LGPD, backup e qualidade (RNF02, RNF03, RNF05, RNF08)
-- [ ] `AdminDados`: editar `settings`; "Exportar backup (JSON)" (lê todas as tabelas e baixa um arquivo); LGPD: buscar motorista/destinatário → "Anonimizar" (apaga arquivos do Storage + RPC) e "Excluir"; "Aplicar retenção (90 dias)".
-- [ ] `scripts/backup.mjs`: exporta cada tabela para `backups/AAAA-MM-DD/<tabela>.json`. Também: `npx supabase db dump -f backups/schema.sql` e `npx supabase db dump --data-only -f backups/data.sql`.
-- [ ] Restauração documentada: `supabase db reset` (local) ou rodar migrations em projeto novo + `psql "<connection string>" -f backups/data.sql`.
-- [ ] Passada de acessibilidade: navegar tudo só com Tab/Enter/Esc; `aria-label` em botões só-ícone; tabelas com `<th scope>`; mapa sempre acompanhado da lista equivalente; testar em 375 px.
-- [ ] Performance: paginação (`range`) nas listas, `select` só das colunas usadas, lazy routes (`React.lazy`) para páginas com mapa/gráficos, `npm run build` sem avisos de chunk gigante não tratados.
+- [x] `AdminDados`: editar `settings`; "Exportar backup (JSON)" (lê todas as tabelas e baixa um arquivo); LGPD: buscar motorista/destinatário → "Anonimizar" (apaga arquivos do Storage + RPC) e "Excluir"; "Aplicar retenção (90 dias)".
+  - *Desvio:* rota `/admin/dados` sem o editor de `settings` (limites/depósito continuam no seed/SQL — pendente). Aviso de privacidade público em `/privacidade` (link no login e no rodapé).
+- [x] `scripts/backup.mjs`: exporta cada tabela para `backups/AAAA-MM-DD/<tabela>.json`. Também: `npx supabase db dump -f backups/schema.sql` e `npx supabase db dump --data-only -f backups/data.sql`.
+- [x] Restauração documentada: `supabase db reset` (local) ou rodar migrations em projeto novo + `psql "<connection string>" -f backups/data.sql`.
+- [x] Passada de acessibilidade: navegar tudo só com Tab/Enter/Esc; `aria-label` em botões só-ícone; tabelas com `<th scope>`; mapa sempre acompanhado da lista equivalente; testar em 375 px.
+- [x] Performance: paginação (`range`) nas listas, `select` só das colunas usadas, lazy routes (`React.lazy`) para páginas com mapa/gráficos, `npm run build` sem avisos de chunk gigante não tratados.
 - **Pronto: backup JSON baixa e reimporta; anonimizar remove nome/telefone/arquivos mantendo os KPIs; Lighthouse acessibilidade ≥ 90 no Dashboard.**
 
 ### Fase 11 — Documentação e entrega (RNF09)
-- [ ] `README.md`: visão geral, requisitos (Node 20+, conta Supabase), instalação passo a passo, variáveis de ambiente (as duas `.env.example`), comandos, usuários de teste, deploy das funções, **modelo de IA e integração** (provedor, modelo, endpoint `/functions/v1/ai`, ações, prompts, formato JSON, fallback), **abordagem de roteirização** (algoritmo da Fase 5), fórmulas dos KPIs, decisões da seção 0, estrutura de pastas, backup/restauração, LGPD.
-- [ ] `docs/MANUAL_USUARIO.md`: um capítulo por perfil, com passo a passo das tarefas e capturas de tela.
-- [ ] Checklist da seção 11.
+- [x] `README.md`: visão geral, requisitos (Node 20+, conta Supabase), instalação passo a passo, variáveis de ambiente (as duas `.env.example`), comandos, usuários de teste, deploy das funções, **modelo de IA e integração** (provedor, modelo, endpoint `/functions/v1/ai`, ações, prompts, formato JSON, fallback), **abordagem de roteirização** (algoritmo da Fase 5), fórmulas dos KPIs, decisões da seção 0, estrutura de pastas, backup/restauração, LGPD.
+- [x] `docs/MANUAL_USUARIO.md`: um capítulo por perfil, com passo a passo das tarefas e capturas de tela.
+  - *Desvio:* arquivo em `docs/MANUAL.md` (sem capturas; com FAQ de suporte). Checklist de entrega e rascunho do PDF em `docs/ENTREGA.md`.
+- [x] Checklist da seção 11.
 
 ---
 
@@ -713,12 +716,12 @@ PED-1002;Bruno Lima;;Rua Voluntários da Pátria, 500, Santana, São Paulo;Zona 
 ## 11. Checklist de entrega final
 
 - [ ] Repositório GitHub com acesso concedido a **Cardoso30S**, **fiorezewesley**, **Greggori** (convites aceitos ou repositório público).
-- [ ] ≥ 3 commits com mensagens descritivas, todos enviados (`git log --oneline origin/main`).
-- [ ] Nenhum segredo versionado: `git ls-files | grep -E "\.env$"` vazio; só `.env.example` no repo.
-- [ ] `README.md` com instalação, execução, dependências, variáveis de ambiente, IA (modelo, integração, prompts, endpoints), roteirização, decisões.
-- [ ] `docs/MANUAL_USUARIO.md`.
-- [ ] Clonar em pasta limpa, seguir só o README e rodar com sucesso (`npm install`, `npm run dev`, `npm run build`, `node --test src/lib`).
-- [ ] Teste final com os 4 perfis + teste de fallback (IA desligada, mapa desligado).
+- [x] ≥ 3 commits com mensagens descritivas, todos enviados (`git log --oneline origin/main`).
+- [x] Nenhum segredo versionado: `git ls-files | grep -E "\.env$"` vazio; só `.env.example` no repo.
+- [x] `README.md` com instalação, execução, dependências, variáveis de ambiente, IA (modelo, integração, prompts, endpoints), roteirização, decisões.
+- [x] `docs/MANUAL.md`.
+- [x] Clonar em pasta limpa, seguir só o README e rodar com sucesso (`npm install`, `npm run dev`, `npm run build`, `node --test src/lib`).
+- [ ] Teste final manual com os 4 perfis logados + teste de fallback (IA desligada, mapa desligado) — o smoke test automatizado não pôde logar.
 - [ ] Pasta zipada **`moduloA_nomeEquipe.zip`** (sem `node_modules`, `dist`, `.env`, `backups/`): `git archive -o moduloA_nomeEquipe.zip HEAD`.
 - [ ] PDF final com: nome da equipe, link do repositório, resumo da solução, arquitetura, decisões sobre ambiguidades, como a IA e a roteirização funcionam, usuários de teste, capturas de tela.
 

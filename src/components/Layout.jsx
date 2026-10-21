@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
+import ChatHelper from './ChatHelper.jsx'
 import { useAuth } from '../auth/context.js'
+import { useAlertCount } from '../lib/useAlerts.js'
 import { ROLE_LABELS } from '../auth/roles.js'
 
 // Menu filtrado por perfil (PLANO.md seções 2 e 3). Novas telas entram aqui nas próximas fases.
@@ -12,14 +14,20 @@ const NAV = [
   { to: '/motoristas', label: 'Motoristas', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/pedidos', label: 'Pedidos', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/roteirizacao', label: 'Roteirização', roles: ['admin', 'despachante'] },
+  { to: '/rastreamento', label: 'Rastreamento', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/previsao', label: 'Previsão', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/riscos', label: 'Riscos', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/alertas', label: 'Alertas', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/motorista', label: 'Minha rota', roles: ['admin', 'motorista'] },
   { to: '/usuarios', label: 'Usuários', roles: ['admin'] },
+  { to: '/admin/dados', label: 'Dados e LGPD', roles: ['admin'] },
 ]
 
 export default function Layout() {
   const { profile, signOut } = useAuth()
   const [open, setOpen] = useState(false)
   const items = NAV.filter((i) => i.roles.includes(profile.role))
+  const alertCount = useAlertCount(profile.role)
 
   return (
     <>
@@ -35,7 +43,9 @@ export default function Layout() {
             onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}>
             <ul>
               {items.map((i) => (
-                <li key={i.to}><NavLink to={i.to} onClick={() => setOpen(false)}>{i.label}</NavLink></li>
+                <li key={i.to}><NavLink to={i.to} onClick={() => setOpen(false)}>{i.label}
+                  {i.to === '/alertas' && alertCount > 0 && <> <span className="badge danger">{alertCount}<span className="sr-only"> abertos</span></span></>}
+                </NavLink></li>
               ))}
             </ul>
           </nav>
@@ -48,6 +58,8 @@ export default function Layout() {
       <main id="conteudo" className="container" tabIndex={-1}>
         <Outlet />
       </main>
+      <ChatHelper />
+      <footer className="container hint"><Link to="/privacidade">Aviso de privacidade (LGPD)</Link></footer>
     </>
   )
 }

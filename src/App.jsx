@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import AuthProvider from './auth/AuthProvider.jsx'
 import RequireRole from './auth/RequireRole.jsx'
@@ -6,12 +7,19 @@ import { HOME_BY_ROLE } from './auth/roles.js'
 import Layout from './components/Layout.jsx'
 import Login from './pages/Login.jsx'
 import Painel from './pages/Painel.jsx'
-import Usuarios from './pages/Usuarios.jsx'
-import Veiculos from './pages/Veiculos.jsx'
-import Motoristas from './pages/Motoristas.jsx'
-import Pedidos from './pages/Pedidos.jsx'
-import Roteirizacao from './pages/Roteirizacao.jsx'
-import MotoristaHome from './pages/MotoristaHome.jsx'
+const Usuarios = lazy(() => import('./pages/Usuarios.jsx'))
+const AdminDados = lazy(() => import('./pages/AdminDados.jsx'))
+import Privacidade from './pages/Privacidade.jsx'
+const Veiculos = lazy(() => import('./pages/Veiculos.jsx'))
+const Motoristas = lazy(() => import('./pages/Motoristas.jsx'))
+const Pedidos = lazy(() => import('./pages/Pedidos.jsx'))
+const Roteirizacao = lazy(() => import('./pages/Roteirizacao.jsx'))
+const MotoristaHome = lazy(() => import('./pages/MotoristaHome.jsx'))
+const Rastreamento = lazy(() => import('./pages/Rastreamento.jsx'))
+const Previsao = lazy(() => import('./pages/Previsao.jsx'))
+const Riscos = lazy(() => import('./pages/Riscos.jsx'))
+const Alertas = lazy(() => import('./pages/Alertas.jsx'))
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
 
 // "/" leva cada perfil ao seu painel; rotas proibidas também caem aqui (RequireRole).
 function Home() {
@@ -23,17 +31,24 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        {/* Páginas carregadas sob demanda (RNF02): mapa, gráficos e exportação ficam fora do bundle inicial. */}
+        <Suspense fallback={<p role="status" className="container">Carregando…</p>}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/privacidade" element={<Privacidade />} />
           <Route element={<RequireRole />}>
             <Route index element={<Home />} />
             <Route element={<Layout />}>
               <Route element={<RequireRole roles={['admin', 'gestor_frota', 'despachante']} />}>
-                <Route path="/dashboard" element={<Painel title="Dashboard">KPIs e gráficos chegam na Fase 9.</Painel>} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 {/* Escrita decidida na página e garantida no RLS: veículos/motoristas admin+gestor; pedidos admin+despachante. */}
                 <Route path="/veiculos" element={<Veiculos />} />
                 <Route path="/motoristas" element={<Motoristas />} />
                 <Route path="/pedidos" element={<Pedidos />} />
+                <Route path="/rastreamento" element={<Rastreamento />} />
+                <Route path="/previsao" element={<Previsao />} />
+                <Route path="/riscos" element={<Riscos />} />
+                <Route path="/alertas" element={<Alertas />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'gestor_frota']} />}>
                 <Route path="/frota" element={<Painel title="Painel da frota">Cadastros: <Link to="/veiculos">Veículos</Link> · <Link to="/motoristas">Motoristas</Link>. Indicadores da frota chegam nas próximas fases.</Painel>} />
@@ -47,11 +62,13 @@ export default function App() {
               </Route>
               <Route element={<RequireRole roles={['admin']} />}>
                 <Route path="/usuarios" element={<Usuarios />} />
+                <Route path="/admin/dados" element={<AdminDados />} />
               </Route>
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </AuthProvider>
   )

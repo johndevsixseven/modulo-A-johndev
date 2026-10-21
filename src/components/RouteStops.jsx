@@ -5,7 +5,7 @@ const num = (n, d = 1) => n.toLocaleString('pt-BR', { maximumFractionDigits: d }
 const osm = (s) => `https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lng}#map=17/${s.lat}/${s.lng}`
 
 // Lista ordenada de paradas: forma principal (e acessível) de ver a rota; o mapa é complemento (RNF03/RNF06).
-export default function RouteStops({ route, headingLevel = 3, children }) {
+export default function RouteStops({ route, headingLevel = 3, children, stopExtra }) {
   const H = `h${headingLevel}`
   const hid = `rota-${route.key}`
   return (
@@ -39,6 +39,7 @@ export default function RouteStops({ route, headingLevel = 3, children }) {
               <br />
               <span className="hint">{s.address}</span>{' '}
               <a href={osm(s)} target="_blank" rel="noreferrer">Abrir no OpenStreetMap<span className="sr-only"> ({s.code}, nova aba)</span></a>
+              {stopExtra?.(s)}
             </div>
           </li>
         ))}

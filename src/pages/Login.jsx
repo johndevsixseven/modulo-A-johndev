@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { supabaseConfigured } from '../lib/env.js'
 import { useAuth } from '../auth/context.js'
@@ -86,6 +86,7 @@ export default function Login() {
 
         <button type="submit" disabled={busy || !supabaseConfigured}>{busy ? 'Entrando…' : 'Entrar'}</button>
       </form>
+      <p className="hint"><Link to="/privacidade">Aviso de privacidade (LGPD)</Link></p>
     </main>
   )
 }

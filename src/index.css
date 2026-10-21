@@ -180,3 +180,28 @@ dialog h2 { margin: 0; }
 .stop-num { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px;
   border: 3px solid; border-radius: 50%; font-weight: 700; }
 @media (max-width: 640px) { .route-map { height: 300px; } }
+
+/* Fase 9: dashboard e chatbot */
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi strong { font-size: 1.75rem; }
+.charts { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.chart { margin: 0; min-width: 0; }
+.chat-fab { position: fixed; right: 16px; bottom: 16px; z-index: 900; border-radius: 999px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
+.chat-dialog { width: min(480px, calc(100vw - 32px)); max-height: min(640px, calc(100vh - 32px)); padding: var(--space);
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); }
+.chat-dialog::backdrop { background: rgb(0 0 0 / 0.4); }
+.chat-dialog h2 { margin: 0; }
+.chat-log { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 8px;
+  max-height: 50vh; overflow-y: auto; }
+.chat-log li { padding: 8px 12px; border-radius: var(--radius); overflow-wrap: anywhere; }
+.chat-user { align-self: flex-end; background: var(--primary); color: var(--primary-text); }
+.chat-bot { align-self: flex-start; border: 1px solid var(--border); }
+.chat-bot .row-actions { margin-top: 8px; }
+
+/* Fase 6 · rastreamento e comprovante */
+.filters { display: flex; flex-wrap: wrap; gap: 12px; }
+.filters .field { flex: 1 1 160px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; list-style: none; margin: 0; padding: 0; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.signature { width: 100%; max-width: 600px; aspect-ratio: 3 / 1; border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fff; touch-action: none; }
