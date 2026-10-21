@@ -1,12 +1,11 @@
 import { Suspense, lazy } from 'react'
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AuthProvider from './auth/AuthProvider.jsx'
 import RequireRole from './auth/RequireRole.jsx'
 import { useAuth } from './auth/context.js'
 import { HOME_BY_ROLE } from './auth/roles.js'
 import Layout from './components/Layout.jsx'
 import Login from './pages/Login.jsx'
-import Painel from './pages/Painel.jsx'
 const Usuarios = lazy(() => import('./pages/Usuarios.jsx'))
 const AdminDados = lazy(() => import('./pages/AdminDados.jsx'))
 import Privacidade from './pages/Privacidade.jsx'
@@ -20,6 +19,8 @@ const Previsao = lazy(() => import('./pages/Previsao.jsx'))
 const Riscos = lazy(() => import('./pages/Riscos.jsx'))
 const Alertas = lazy(() => import('./pages/Alertas.jsx'))
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
+const Frota = lazy(() => import('./pages/Frota.jsx'))
+const Despacho = lazy(() => import('./pages/Despacho.jsx'))
 
 // "/" leva cada perfil ao seu painel; rotas proibidas também caem aqui (RequireRole).
 function Home() {
@@ -51,10 +52,10 @@ export default function App() {
                 <Route path="/alertas" element={<Alertas />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'gestor_frota']} />}>
-                <Route path="/frota" element={<Painel title="Painel da frota">Cadastros: <Link to="/veiculos">Veículos</Link> · <Link to="/motoristas">Motoristas</Link>. Indicadores da frota chegam nas próximas fases.</Painel>} />
+                <Route path="/frota" element={<Frota />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'despachante']} />}>
-                <Route path="/despacho" element={<Painel title="Painel de despacho">Cadastros: <Link to="/pedidos">Pedidos</Link> (com importação CSV) · <Link to="/roteirizacao">Roteirização</Link> (gerar e liberar as rotas do dia).</Painel>} />
+                <Route path="/despacho" element={<Despacho />} />
                 <Route path="/roteirizacao" element={<Roteirizacao />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'motorista']} />}>
