@@ -64,9 +64,9 @@ modulo-a/
 └─ supabase/
    ├─ config.toml               # gerado por `supabase init`
    ├─ migrations/
-   │  ├─ 0001_schema.sql        # enums, tabelas, índices
-   │  ├─ 0002_rls.sql           # helpers + políticas + storage
-   │  └─ 0003_functions.sql     # triggers, RPCs, alertas, LGPD, realtime
+   │  ├─ 20261021120000_schema.sql     # (0001) enums, tabelas, índices
+   │  ├─ 20261021120100_rls.sql        # (0002) helpers + políticas + storage
+   │  └─ 20261021120200_functions.sql  # (0003) triggers, RPCs, alertas, LGPD, realtime
    ├─ seed.sql                  # veículos, motoristas, 60 dias de histórico
    └─ functions/
       ├─ .env(.example)
@@ -480,9 +480,24 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
 - **Pronto: `npm run dev` abre a página e `supabase.auth.getSession()` responde sem erro.**
 
 ### Fase 2 — Banco, RLS e seed
-- [ ] Escrever `0001_schema.sql`, `0002_rls.sql`, `0003_functions.sql` (seção 4) e `supabase/seed.sql` (seção 8).
-- [ ] `npx supabase db push` (ou colar no SQL Editor na ordem). Rodar `seed.sql` no SQL Editor.
-- [ ] `scripts/seed-users.mjs`: cria 4 usuários (admin, gestor, despachante, motorista) com `auth.admin.createUser`, atualiza `profiles.role` e vincula o motorista a `drivers`. Rodar: `node --env-file=.env --env-file=supabase/functions/.env scripts/seed-users.mjs`. E-mails/senhas **de teste** ficam definidos no próprio script e listados no README (são só para avaliação; nunca reutilizar senhas reais).
+- [x] Escrever `0001_schema.sql`, `0002_rls.sql`, `0003_functions.sql` (seção 4) e `supabase/seed.sql` (seção 8).
+  - *Nomes:* padrão da CLI em `supabase/migrations/` (`20261021120000_schema.sql`, `20261021120100_rls.sql`, `20261021120200_functions.sql`). **As migrations são a fonte da verdade**; o SQL das seções 4.1–4.3 ficou como rascunho histórico.
+  - *Validação:* Docker indisponível na máquina → `supabase start`/`db reset` **não executados**; SQL revisado manualmente. Rodar `npx supabase db reset` assim que houver Docker.
+  - *Correções feitas no SQL do plano (revisão antes de gravar):*
+    1. Tudo qualificado com `public.`; funções `security definer` com `set search_path = ''` (evita sequestro de search_path); `pgcrypto` criado em `extensions`.
+    2. Índices com nome explícito + índices que faltavam em FKs (`routes.vehicle_id`, `vehicle_positions.route_id`, `pods.driver_id`, `notification_log.alert_id`) e em `deliveries.window_start` (KPIs/previsão).
+    3. Checks extras: `pods` exige `failure_reason` quando `falha`; `risk_score` 0–100; `risk_level` em baixo/medio/critico; lat/lng válidos em posições. `created_by` com `default auth.uid()`.
+    4. RLS: policies `to authenticated` com helpers envolvidos em `(select …)` (avaliados uma vez por consulta); `with check` explícito em todo update; novos helpers `is_my_route()`/`is_my_delivery()` (security definer) no lugar de subconsultas sob RLS.
+    5. Faltavam policies: `pods` update/delete (admin), `alerts` delete (equipe — matriz diz E), `vehicle_positions` delete (admin), `notification_log` delete (admin), `settings` separado em insert/update/delete (admin). Motorista só grava posição com `route_id` nulo ou de rota dele.
+    6. Storage: o cast `foldername(name)[1]::uuid` quebrava a policy com erro em pastas inválidas → comparação como texto; `name` sem qualificar dentro da subconsulta resolvia para `routes.name` → `objects.name`; leitura pelo motorista usava `owner` (coluna obsoleta) → agora pela pasta da entrega dele; bucket com limite de 5 MB e só `image/jpeg|png|webp`.
+    7. Trigger de posição: "andou > 100 m desde a última" nunca detectaria movimento lento (posições a cada 10 s) → compara com a posição do último movimento; `last_seen_at` usa `recorded_at`; fora da rota só para rota `em_andamento`.
+    8. Trigger de POD: `delivered_at` só quando `entregue`; rota só é concluída se estava `liberada/em_andamento` (não sobrescreve histórico); `recorded_at` forçado para `now()` do servidor quando vem de usuário (RF07: data/hora do servidor).
+    9. RPCs: `release_route` exige status `rascunho` com veículo e motorista; `start_route` aceita dono da rota ou admin e zera o "parado" (`last_moved_at = now()`); `check_alerts` recusa quem não é da equipe (pg_cron/service_role sem JWT passam), não alerta manutenção de veículo já `em_manutencao`, severidade alta quando já venceu, e também cria `risco_alto` a partir de `deliveries.risk_score`; datas em America/Sao_Paulo. `dashboard_kpis`/`demand_history` são `security invoker` (RLS de quem chama). LGPD com checagem explícita de admin.
+    10. `EXECUTE` das RPCs revogado de `anon`/`public` (o Supabase concede ao anon por padrão) e concedido a `authenticated`/`service_role`.
+  - *Seed:* determinístico via `hashtext()` (sem `random()`), chaves fixas e `on conflict do nothing`; o motorista de teste é o driver `…0203` (van SEN2B03). `profiles` só é preenchido pelo `seed-users.mjs`.
+- [ ] `npx supabase db push` (ou colar no SQL Editor na ordem). Rodar `seed.sql` no SQL Editor. *(pendente: exige `supabase login`/`link` do usuário e `.env` preenchido)*
+- [x] `scripts/seed-users.mjs`: cria 4 usuários (admin, gestor, despachante, motorista) com `auth.admin.createUser`, atualiza `profiles.role` e vincula o motorista a `drivers`. Rodar: `node scripts/seed-users.mjs` (o script carrega `.env` e `supabase/functions/.env` sozinho). E-mails `@senn-aix.test` fixos no script; **senhas aleatórias geradas na 1ª execução** e gravadas em `scripts/test-users.local.json` (no `.gitignore`), reaproveitadas nas seguintes.
+  - *Correção:* senhas não ficam no código nem no README (repositório é compartilhado); o README deve só apontar o arquivo local.
 - **Pronto: no SQL Editor, `select count(*)` retorna dados em todas as tabelas; com o JWT do motorista, `select * from deliveries` só retorna entregas da rota dele.**
 
 ### Fase 3 — Autenticação e layout (RF01, RNF01, RNF03)
