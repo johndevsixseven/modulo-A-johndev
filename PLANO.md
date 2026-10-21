@@ -532,11 +532,15 @@ Cada fase termina com um commit (seção 10). Critério de pronto em **negrito**
 - **Pronto: CRUD completo dos três; `public/exemplo-pedidos.csv` importa 100% e um CSV com erro mostra a linha e o motivo.**
 
 ### Fase 5 — Roteirização (RF05)
-- [ ] `src/lib/routing.js` (algoritmo abaixo) + `routing.test.js` (`node --test src/lib`).
-- [ ] Tela `Roteirizacao`: data, pedidos pendentes, veículos disponíveis com motorista → "Gerar rotas" → mapa com uma polilinha/cor por rota + lista de paradas com ETA, km, custo, carga/capacidade; pedidos não alocados com motivo.
-- [ ] "Explicar com IA" (opcional): `ai` action `route_explain` → texto salvo em `routes.ai_notes`.
-- [ ] "Salvar e liberar": insere `routes`, atualiza `deliveries.route_id/stop_order/eta`, chama `release_route`.
-- [ ] `MotoristaHome`: rota do dia, mapa, lista de paradas, botão "Iniciar rota" (`start_route`).
+- [x] `src/lib/routing.js` (algoritmo abaixo) + `routing.test.js` (`npm test`).
+  - *Desvio no algoritmo:* em vez de alocar first-fit e depois sequenciar, cada veículo (menor `cost_per_km` primeiro) monta a rota por **vizinho mais próximo em tempo** (deslocamento + espera da janela, ponderado pela prioridade: urgente 0,25 · alta 0,5 · normal 1 · baixa 1,25) entre os pedidos que cabem em kg, m³, janela e autonomia (incluindo a volta ao depósito). Assim capacidade/janela/autonomia são garantidas na construção; 2-opt depois só aceita trocas viáveis que reduzem a distância. Parâmetros de `settings.roteirizacao` (velocidade, tempo de parada, fator de rua, início). Motivos de não alocação: sem coordenada, sem veículo, capacidade, autonomia, janela, frota (veículos cheios/sem horário).
+  - Limites: 2-opt ignora prioridade (só distância, com janelas válidas); heurística gulosa, não ótima; 2-opt é O(n³) por rota (ok para dezenas de paradas por veículo).
+  - Testes: capacidade kg/m³, janelas (inclui espera), autonomia, 2-opt não piora, entrada vazia, sem veículo, sem coordenada, frota cheia, urgente priorizado, cada pedido uma única vez.
+- [x] Tela `Roteirizacao` (`/roteirizacao`, admin e despachante; link no `/despacho` e no menu): data, checkboxes de pedidos pendentes sem rota (janela iniciando na data) e de veículos `disponivel` com motorista disponível e CNH válida → "Gerar rotas" → mapa (Leaflet, carregado sob demanda) com polilinha/cor por rota + lista ordenada de paradas com ETA, janela, km, tempo, custo, carga/capacidade e link "Abrir no OpenStreetMap"; tabela de não alocados com motivo. Fallback: `VITE_ENABLE_MAPS=false` ou ≥ 3 `tileerror` → aviso e só a lista (que sempre aparece).
+- [ ] "Explicar com IA" (opcional): fica para a Fase 7 (`routes.ai_notes` já existe; o botão entra na tela `Roteirizacao`).
+- [x] "Salvar e liberar": insere `routes` (rascunho), atualiza `deliveries.route_id/stop_order/eta` só se ainda `pendente` e sem rota (senão desfaz a rota) e chama `release_route`. Rascunho que não liberou aparece em "Rotas salvas" com botão "Liberar".
+- [x] `MotoristaHome` (`/motorista`): rota do dia (RLS: só as do motorista; admin escolhe entre todas), mapa, lista de paradas, botão "Iniciar rota" (`start_route`).
+  - Sem migration nova. Validação: build, lint e `npm test` ok; teste de API no remoto: 30 pedidos do seed → 5 rotas, 27 alocadas, 3 não alocadas por janela vencida, nenhuma capacidade/autonomia excedida; `release_route` ok (repetir → P0002; gestor → 42501); motorista vê só a rota dele e as paradas dela, não vê/inicia a de outro, `start_route` ok. Dados restaurados. Navegador: só a geração no `/roteirizacao` foi conferida (mapa + lista); salvar/liberar pela tela, tela do motorista e 375 px não foram testados no navegador (prioridade de prazo).
 - **Pronto: 30 pedidos do seed geram rotas sem exceder capacidade; teste unitário passa; motorista vê a rota liberada.**
 
 **Algoritmo (documentar no README):**

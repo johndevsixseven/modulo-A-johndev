@@ -10,6 +10,8 @@ import Usuarios from './pages/Usuarios.jsx'
 import Veiculos from './pages/Veiculos.jsx'
 import Motoristas from './pages/Motoristas.jsx'
 import Pedidos from './pages/Pedidos.jsx'
+import Roteirizacao from './pages/Roteirizacao.jsx'
+import MotoristaHome from './pages/MotoristaHome.jsx'
 
 // "/" leva cada perfil ao seu painel; rotas proibidas também caem aqui (RequireRole).
 function Home() {
@@ -37,10 +39,11 @@ export default function App() {
                 <Route path="/frota" element={<Painel title="Painel da frota">Cadastros: <Link to="/veiculos">Veículos</Link> · <Link to="/motoristas">Motoristas</Link>. Indicadores da frota chegam nas próximas fases.</Painel>} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'despachante']} />}>
-                <Route path="/despacho" element={<Painel title="Painel de despacho">Cadastros: <Link to="/pedidos">Pedidos</Link> (com importação CSV). A roteirização chega na Fase 5.</Painel>} />
+                <Route path="/despacho" element={<Painel title="Painel de despacho">Cadastros: <Link to="/pedidos">Pedidos</Link> (com importação CSV) · <Link to="/roteirizacao">Roteirização</Link> (gerar e liberar as rotas do dia).</Painel>} />
+                <Route path="/roteirizacao" element={<Roteirizacao />} />
               </Route>
               <Route element={<RequireRole roles={['admin', 'motorista']} />}>
-                <Route path="/motorista" element={<Painel title="Minha rota">A rota do dia chega na Fase 5.</Painel>} />
+                <Route path="/motorista" element={<MotoristaHome />} />
               </Route>
               <Route element={<RequireRole roles={['admin']} />}>
                 <Route path="/usuarios" element={<Usuarios />} />

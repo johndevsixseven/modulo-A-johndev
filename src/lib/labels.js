@@ -26,3 +26,10 @@ export const formatDateTime = (iso) =>
 
 // timestamptz → valor de <input type="datetime-local"> em Brasília (UTC−3, sem horário de verão desde 2019).
 export const isoToLocalInput = (iso) => (iso ? new Date(Date.parse(iso) - 3 * 36e5).toISOString().slice(0, 16) : '')
+
+export const formatTime = (iso) =>
+  iso ? new Date(iso).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }) : '—'
+
+export const ROUTE_STATUS = {
+  rascunho: 'Rascunho', liberada: 'Liberada', em_andamento: 'Em andamento', concluida: 'Concluída', cancelada: 'Cancelada',
+}

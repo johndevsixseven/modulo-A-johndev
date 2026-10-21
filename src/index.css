@@ -163,3 +163,20 @@ caption { text-align: left; }
 dialog { max-width: min(480px, calc(100vw - 32px)); color: var(--text); }
 dialog::backdrop { background: rgb(0 0 0 / 0.5); }
 dialog h2 { margin: 0; }
+
+/* ---- Fase 5: roteirização ---- */
+.select-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); align-items: start; }
+.check-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow-y: auto; }
+.check-list .checkbox { align-items: flex-start; padding: 4px 0; }
+.check-list .checkbox input { margin-top: 2px; flex: none; }
+.route-map { height: 420px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.route-title { display: flex; align-items: center; gap: 8px; margin: 0; }
+.swatch { display: inline-block; width: 16px; height: 16px; border-radius: 4px; flex: none; }
+.route-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0; }
+.route-summary dt { color: var(--text-muted); font-size: 0.875rem; }
+.route-summary dd { margin: 0; font-weight: 600; }
+.stops { list-style: none; margin: 0; padding: 0; }
+.stops li { display: flex; gap: 12px; padding: 8px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.stop-num { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px;
+  border: 3px solid; border-radius: 50%; font-weight: 700; }
+@media (max-width: 640px) { .route-map { height: 300px; } }

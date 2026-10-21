@@ -11,6 +11,7 @@ const NAV = [
   { to: '/veiculos', label: 'Veículos', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/motoristas', label: 'Motoristas', roles: ['admin', 'gestor_frota', 'despachante'] },
   { to: '/pedidos', label: 'Pedidos', roles: ['admin', 'gestor_frota', 'despachante'] },
+  { to: '/roteirizacao', label: 'Roteirização', roles: ['admin', 'despachante'] },
   { to: '/motorista', label: 'Minha rota', roles: ['admin', 'motorista'] },
   { to: '/usuarios', label: 'Usuários', roles: ['admin'] },
 ]
